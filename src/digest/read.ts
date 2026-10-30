@@ -45,6 +45,7 @@ export function digest(text: string): { rows: DigestRow[]; badLines: number } {
         owner: r.owner,
         runs: 1,
         retries: r.status === 'retry' ? 1 : 0,
+        fails: r.status === 'fail' ? 1 : 0,
         lastStatus: r.status,
         lastError: r.error ?? null,
         firstAt: r.at,
@@ -54,6 +55,7 @@ export function digest(text: string): { rows: DigestRow[]; badLines: number } {
     }
     row.runs++;
     if (r.status === 'retry') row.retries++;
+    if (r.status === 'fail') row.fails++;
     // The log is in time order; the last line for a job is its last state.
     row.lastStatus = r.status;
     row.lastError = r.error ?? null;

@@ -17,6 +17,7 @@ export type DigestRow = {
   owner: string | null;
   runs: number;
   retries: number;
+  fails: number;
   lastStatus: RunStatus;
   lastError: string | null;
   firstAt: string;

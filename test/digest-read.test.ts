@@ -18,11 +18,11 @@ describe('readNight', () => {
   it('keeps counts, last state and the log offset', () => {
     const rows = readNight('runs', '2026-10-28')!.rows;
     const refresh = rows.find((r) => r.job === 'fixtures/refresh')!;
-    expect(refresh).toMatchObject({ runs: 4, retries: 3, lastStatus: 'ok', lastError: null });
+    expect(refresh).toMatchObject({ runs: 4, retries: 3, fails: 0, lastStatus: 'ok', lastError: null });
     expect(refresh.firstAt).toBe('2026-10-29T01:30:00+01:00');
     expect(refresh.lastAt).toBe('2026-10-29T01:37:00+01:00');
     const backup = rows.find((r) => r.job === 'notes/backup')!;
-    expect(backup).toMatchObject({ runs: 1, lastStatus: 'fail', lastError: 'quota exceeded' });
+    expect(backup).toMatchObject({ runs: 1, fails: 1, lastStatus: 'fail', lastError: 'quota exceeded' });
   });
 
   it('keeps a row whose owner is null', () => {
