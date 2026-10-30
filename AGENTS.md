@@ -7,6 +7,7 @@ Read first: `docs/vision.md`, `docs/styleguide.md`. Decisions: `docs/adr/`.
 
 ## Commands
 
+- Toolchain: `mise.toml` pins node and pnpm. Run `mise install` once; mise puts them on `PATH`.
 - `pnpm dev` / `pnpm start`: serves on `PORT` (8787). Needs `.env` (copy `.env.example`).
 - `pnpm test`: vitest. `pnpm typecheck`: tsc.
 
