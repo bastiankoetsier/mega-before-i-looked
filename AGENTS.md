@@ -31,6 +31,22 @@ Read first: `docs/vision.md`, `docs/styleguide.md`. Decisions: `docs/adr/`.
 5. An issue is closed only when its "Done when" holds. If it can't hold yet, leave it open and
    say what it waits on.
 
+## Previews
+
+A preview (ADR 0003) goes out through the GitHub Actions workflow `preview`, never by hand and
+never as a committed file. It renders the page in CI and deploys it to GitHub Pages:
+
+- With the marker, for the review: `gh workflow run preview.yml -f marker=true`. The marker comes
+  from the repo secret `LANE_MARKER` (`gh secret set LANE_MARKER`), never from a commit.
+- Without it, once the review is in: `gh workflow run preview.yml -f marker=false`. Same link, and
+  the banner reads "no marker set".
+- Before you send the link, and after each run, fetch the live page yourself and check the banner.
+- Pages is off between plans. Turning it on (`gh api -X POST repos/<owner>/<repo>/pages -f
+  build_type=workflow`), every run that publishes, and turning it off again need a human's yes
+  first, because the link is public. When the plan is done: turn Pages off and delete the secret.
+- The page to save is in the workflow (`scripts/save-page.ts <path> <out-file>`); change it there
+  for a new plan.
+
 ## Skills
 
 Shared skills live in `.agents/skills/`, one folder each, `SKILL.md` inside. That folder is the
