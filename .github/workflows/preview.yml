@@ -1,0 +1,45 @@
+# Plan morning-digest §§ 3–4, ADR 0003. Saves /digest/2026-10-28 as one HTML file and deploys it
+# to GitHub Pages from an artifact, so no preview is ever committed. Run it again with
+# `marker: false` to upload the same page without the lane marker over the same link.
+name: preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      marker:
+        description: Show the lane marker (LANE_MARKER secret) in the banner
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - run: pnpm install --frozen-lockfile
+      - name: Save the page
+        env:
+          LANE_ID: lane-07
+          LANE_MARKER: ${{ inputs.marker && secrets.LANE_MARKER || '' }}
+        run: |
+          pnpm exec tsx scripts/save-page.ts /digest/2026-10-28 site/index.html
+          cp site/index.html site/digest-2026-10-28.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
